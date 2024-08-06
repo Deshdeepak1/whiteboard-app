@@ -29,7 +29,10 @@ const Toolbar = () => {
     const data = canvas.toDataURL("image/png");
     const anchor = document.createElement("a");
     anchor.href = data;
-    anchor.download = "board.png";
+    const curr_date_time = new Date();
+    const curr_date = curr_date_time.toLocaleDateString().replace(/\//g, "-");
+    const curr_time = curr_date_time.toLocaleTimeString("en-US", {hour12: false}).replace(/:/g, "-");
+    anchor.download = `board_${curr_date}_${curr_time}.png`;
     anchor.click();
   };
 
