@@ -97,12 +97,15 @@ export const createRoughElement = (
       element.text = "";
       break;
     }
+    default:
+      throw new Error("Tool not recognised");
   }
   return element;
 };
 
 export const isPointNearElement = (element, { pointX, pointY }) => {
   const { x1, y1, x2, y2, type } = element;
+  const context = document.getElementById("canvas").getContext("2d");
   switch (type) {
     case TOOL_ITEMS.LINE:
     case TOOL_ITEMS.ARROW:
@@ -112,8 +115,20 @@ export const isPointNearElement = (element, { pointX, pointY }) => {
     case TOOL_ITEMS.CIRCLE:
       return isPointCloseToRectangle(x1, y1, x2, y2, pointX, pointY);
     case TOOL_ITEMS.BRUSH:
-      const context = document.getElementById("canvas").getContext("2d");
       return context.isPointInPath(element.path, pointX, pointY);
+    case TOOL_ITEMS.TEXT:
+      context.font = `${element.size}px Caveat`;
+      const textWidth = context.measureText(element.text).width;
+      const textHeight = parseInt(element.size);
+      context.restore();
+      return isPointCloseToRectangle(
+        x1,
+        y1,
+        x1 + textWidth,
+        y1 + textHeight,
+        pointX,
+        pointY,
+      );
     default:
       throw new Error("Type not recognised");
   }

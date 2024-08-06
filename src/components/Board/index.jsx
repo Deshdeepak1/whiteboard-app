@@ -16,6 +16,8 @@ const Board = () => {
     boardMouseMoveHandler,
     boardMouseUpHandler,
     textAreaBlurHandler,
+    undo,
+    redo,
   } = useContext(boardContext);
 
   const { toolboxState } = useContext(toolboxContext);
@@ -26,6 +28,24 @@ const Board = () => {
     canvas.height = window.innerHeight;
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      console.log("handleKeyDown start");
+      console.log(event);
+      if (event.ctrlKey && event.key === "z") {
+        undo();
+      } else if (event.ctrlKey && event.key === "y") {
+        redo();
+      }
+      console.log("handleKeyDown end");
+    };
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [undo, redo]);
+
   // Better than useEffect to avoid flickering , this updates dom synchronously
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
@@ -33,7 +53,6 @@ const Board = () => {
     context.save();
 
     const roughCanvas = rough.canvas(canvas);
-    const generator = roughCanvas.generator;
 
     elements.forEach((element) => {
       switch (element.type) {
@@ -89,7 +108,7 @@ const Board = () => {
   };
   return (
     <>
-      {toolActionType == TOOL_ACTION_TYPES.WRITING && (
+      {toolActionType === TOOL_ACTION_TYPES.WRITING && (
         <textarea
           type="text"
           ref={textAreaRef}
