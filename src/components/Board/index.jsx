@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useLayoutEffect, useRef } from "react";
 import rough from "roughjs";
 import { BOARD_ACTIONS, TOOL_ACTION_TYPES } from "../../constants";
 import boardContext from "../../store/board-context";
@@ -19,7 +19,8 @@ function Board() {
     canvas.height = window.innerHeight;
   }, []);
 
-  useEffect(() => {
+  // Better than useEffect to avoid flickering , this updates dom synchronously
+  useLayoutEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.save();

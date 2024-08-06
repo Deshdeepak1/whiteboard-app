@@ -17,7 +17,7 @@ import {
 
 import { LuRectangleHorizontal } from "react-icons/lu";
 import boardContext from "../../store/board-context";
-import { TOOL_ITEMS } from "../../constants";
+import { TOOL_ITEMS } from "../../constants.js";
 
 const Toolbar = () => {
   console.log("Toolbar rendered");
@@ -40,6 +40,22 @@ const Toolbar = () => {
         onClick={() => changeToolHandler(TOOL_ITEMS.RECTANGLE)}
       >
         <LuRectangleHorizontal />
+      </div>
+      <div
+        className={cx(classes.toolItem, {
+          [classes.active]: activeToolItem === TOOL_ITEMS.CIRCLE,
+        })}
+        onClick={() => changeToolHandler(TOOL_ITEMS.CIRCLE)}
+      >
+        <FaRegCircle />
+      </div>
+      <div
+        className={cx(classes.toolItem, {
+          [classes.active]: activeToolItem === TOOL_ITEMS.ARROW,
+        })}
+        onClick={() => changeToolHandler(TOOL_ITEMS.ARROW)}
+      >
+        <FaArrowRight />
       </div>
     </div>
   );

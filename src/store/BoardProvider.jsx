@@ -1,9 +1,7 @@
 import { useReducer, useState } from "react";
 import { BOARD_ACTIONS, TOOL_ACTION_TYPES, TOOL_ITEMS } from "../constants";
 import boardContext from "./board-context";
-import rough from "roughjs/bin/rough";
-
-const gen = rough.generator();
+import { createRoughElement } from "../utils/element";
 
 const boardReducer = (state, action) => {
   switch (action.type) {
@@ -15,14 +13,14 @@ const boardReducer = (state, action) => {
     }
     case BOARD_ACTIONS.DRAW_DOWN: {
       const { clientX, clientY } = action.payload;
-      const newElement = {
-        id: state.elements.length,
-        x1: clientX,
-        y1: clientY,
-        x2: clientX,
-        y2: clientY,
-        roughEle: gen.line(clientX, clientY, clientX, clientY),
-      };
+      const newElement = createRoughElement(
+        state.elements.length,
+        clientX,
+        clientY,
+        clientX,
+        clientY,
+        { type: state.activeToolItem },
+      );
 
       const prevElements = state.elements;
       return {
@@ -32,20 +30,22 @@ const boardReducer = (state, action) => {
       };
     }
 
-    case BOARD_ACTIONS.DRAW_UP: {
-      return { ...state, toolActionType: TOOL_ACTION_TYPES.NONE };
-    }
-
     case BOARD_ACTIONS.DRAW_MOVE: {
       const { clientX, clientY } = action.payload;
       const newElements = [...state.elements];
       const index = state.elements.length - 1;
-      const element = newElements[index];
-      element.x2 = clientX;
-      element.y2 = clientY;
-      element.roughEle = gen.line(element.x1, element.y1, clientX, clientY);
+      const { x1, y1 } = newElements[index];
+      const newElement = createRoughElement(index, x1, y1, clientX, clientY, {
+        type: state.activeToolItem,
+      });
+      newElements[index] = newElement;
       return { ...state, elements: newElements };
     }
+
+    case BOARD_ACTIONS.DRAW_UP: {
+      return { ...state, toolActionType: TOOL_ACTION_TYPES.NONE };
+    }
+
     default:
       return state;
   }
@@ -69,7 +69,6 @@ const BoardProvider = ({ children }) => {
 
   const boardMouseDownHandler = (event) => {
     const { clientX, clientY } = event;
-    const roughEle = gen.line(clientX, clientY, clientX, clientY);
     dispatchBoardAction({
       type: BOARD_ACTIONS.DRAW_DOWN,
       payload: { clientX, clientY },
@@ -78,7 +77,6 @@ const BoardProvider = ({ children }) => {
 
   const boardMouseMoveHandler = (event) => {
     const { clientX, clientY } = event;
-    const roughEle = gen.line(clientX, clientY, clientX, clientY);
     dispatchBoardAction({
       type: BOARD_ACTIONS.DRAW_MOVE,
       payload: { clientX, clientY },
