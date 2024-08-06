@@ -21,7 +21,8 @@ import { TOOL_ITEMS } from "../../constants.js";
 
 const Toolbar = () => {
   console.log("Toolbar rendered");
-  const { activeToolItem, changeToolHandler } = useContext(boardContext);
+  const { activeToolItem, changeToolHandler, undo, redo } =
+    useContext(boardContext);
 
   return (
     <div className={classes.container}>
@@ -80,6 +81,12 @@ const Toolbar = () => {
         onClick={() => changeToolHandler(TOOL_ITEMS.TEXT)}
       >
         <FaFont />
+      </div>
+      <div className={cx(classes.toolItem)} onClick={undo}>
+        <FaUndoAlt />
+      </div>
+      <div className={cx(classes.toolItem)} onClick={redo}>
+        <FaRedoAlt />
       </div>
     </div>
   );
