@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import { BOARD_ACTIONS, TOOL_ACTION_TYPES, TOOL_ITEMS } from "../constants";
 import boardContext from "./board-context";
 import { createRoughElement } from "../utils/element";
@@ -12,14 +12,18 @@ const boardReducer = (state, action) => {
       };
     }
     case BOARD_ACTIONS.DRAW_DOWN: {
-      const { clientX, clientY } = action.payload;
+      const { clientX, clientY, stroke, fill } = action.payload;
       const newElement = createRoughElement(
         state.elements.length,
         clientX,
         clientY,
         clientX,
         clientY,
-        { type: state.activeToolItem },
+        {
+          type: state.activeToolItem,
+          stroke,
+          fill,
+        },
       );
 
       const prevElements = state.elements;
@@ -34,9 +38,11 @@ const boardReducer = (state, action) => {
       const { clientX, clientY } = action.payload;
       const newElements = [...state.elements];
       const index = state.elements.length - 1;
-      const { x1, y1 } = newElements[index];
+      const { x1, y1, stroke, fill } = newElements[index];
       const newElement = createRoughElement(index, x1, y1, clientX, clientY, {
         type: state.activeToolItem,
+        stroke,
+        fill,
       });
       newElements[index] = newElement;
       return { ...state, elements: newElements };
@@ -67,11 +73,16 @@ const BoardProvider = ({ children }) => {
     dispatchBoardAction({ type: BOARD_ACTIONS.CHANGE_TOOl, payload: tool });
   };
 
-  const boardMouseDownHandler = (event) => {
+  const boardMouseDownHandler = (event, toolboxState) => {
     const { clientX, clientY } = event;
     dispatchBoardAction({
       type: BOARD_ACTIONS.DRAW_DOWN,
-      payload: { clientX, clientY },
+      payload: {
+        clientX,
+        clientY,
+        stroke: toolboxState[boardState.activeToolItem].stroke,
+        fill: toolboxState[boardState.activeToolItem].fill,
+      },
     });
   };
 
@@ -79,7 +90,10 @@ const BoardProvider = ({ children }) => {
     const { clientX, clientY } = event;
     dispatchBoardAction({
       type: BOARD_ACTIONS.DRAW_MOVE,
-      payload: { clientX, clientY },
+      payload: {
+        clientX,
+        clientY,
+      },
     });
   };
 

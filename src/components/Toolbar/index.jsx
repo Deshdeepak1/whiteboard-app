@@ -16,7 +16,7 @@ import {
 } from "react-icons/fa";
 
 import { LuRectangleHorizontal } from "react-icons/lu";
-import boardContext from "../../store/board-context";
+import boardContext from "../../store/board-context.js";
 import { TOOL_ITEMS } from "../../constants.js";
 
 const Toolbar = () => {
