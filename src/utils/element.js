@@ -10,7 +10,7 @@ export const createRoughElement = (
   y1,
   x2,
   y2,
-  { type, stroke, fill },
+  { type, stroke, fill, size },
 ) => {
   const element = {
     id,
@@ -21,6 +21,7 @@ export const createRoughElement = (
     type,
     fill,
     stroke,
+    size,
   };
 
   const options = {
@@ -34,6 +35,9 @@ export const createRoughElement = (
 
   if (fill) {
     options.fill = fill;
+  }
+  if (size) {
+    options.strokeWidth = size;
   }
 
   switch (type) {
