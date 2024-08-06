@@ -16,7 +16,7 @@ import {
 } from "react-icons/fa";
 
 import { LuRectangleHorizontal } from "react-icons/lu";
-import boardContext from "../../store/board-context.js";
+import boardContext from "../../store/board-context";
 import { TOOL_ITEMS } from "../../constants.js";
 
 const Toolbar = () => {
@@ -25,6 +25,14 @@ const Toolbar = () => {
 
   return (
     <div className={classes.container}>
+      <div
+        className={cx(classes.toolItem, {
+          [classes.active]: activeToolItem === TOOL_ITEMS.BRUSH,
+        })}
+        onClick={() => changeToolHandler(TOOL_ITEMS.BRUSH)}
+      >
+        <FaPaintBrush />
+      </div>
       <div
         className={cx(classes.toolItem, {
           [classes.active]: activeToolItem === TOOL_ITEMS.LINE,
@@ -56,6 +64,22 @@ const Toolbar = () => {
         onClick={() => changeToolHandler(TOOL_ITEMS.ARROW)}
       >
         <FaArrowRight />
+      </div>
+      <div
+        className={cx(classes.toolItem, {
+          [classes.active]: activeToolItem === TOOL_ITEMS.ERASER,
+        })}
+        onClick={() => changeToolHandler(TOOL_ITEMS.ERASER)}
+      >
+        <FaEraser />
+      </div>
+      <div
+        className={cx(classes.toolItem, {
+          [classes.active]: activeToolItem === TOOL_ITEMS.TEXT,
+        })}
+        onClick={() => changeToolHandler(TOOL_ITEMS.TEXT)}
+      >
+        <FaFont />
       </div>
     </div>
   );
